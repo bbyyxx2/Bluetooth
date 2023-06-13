@@ -31,10 +31,10 @@ import win.lioil.bluetooth.R;
  * BLE服务端(从机/外围设备/peripheral)
  */
 public class BleServerActivity extends Activity {
-    public static final UUID UUID_SERVICE = UUID.fromString("10000000-0000-0000-0000-000000000000"); //自定义UUID
-    public static final UUID UUID_CHAR_READ_NOTIFY = UUID.fromString("11000000-0000-0000-0000-000000000000");
-    public static final UUID UUID_DESC_NOTITY = UUID.fromString("11100000-0000-0000-0000-000000000000");
-    public static final UUID UUID_CHAR_WRITE = UUID.fromString("12000000-0000-0000-0000-000000000000");
+    public static final UUID UUID_SERVICE = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //自定义UUID
+    public static final UUID UUID_CHAR_READ_NOTIFY = UUID.fromString("0000C101-0000-1000-8000-00805F9B3401");
+    public static final UUID UUID_DESC_NOTITY = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_CHAR_WRITE = UUID.fromString("0000C101-0000-1000-8000-00805F9B3403");
     private static final String TAG = BleServerActivity.class.getSimpleName();
     private TextView mTips;
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser; // BLE广播
@@ -148,20 +148,24 @@ public class BleServerActivity extends Activity {
         // ============启动BLE蓝牙广播(广告) =================================================================================
         //广播设置(必须)
         AdvertiseSettings settings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY) //广播模式: 低功耗,平衡,低延迟
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH) //发射功率级别: 极低,低,中,高
+//                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY) //广播模式: 低功耗,平衡,低延迟
+//                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH) //发射功率级别: 极低,低,中,高
+                .setTimeout(0)        //超时时间
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)  //广播模式
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)   //发射功率
                 .setConnectable(true) //能否连接,广播分为可连接广播和不可连接广播
                 .build();
         //广播数据(必须，广播启动就会发送)
         AdvertiseData advertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName(true) //包含蓝牙名称
                 .setIncludeTxPowerLevel(true) //包含发射功率级别
-                .addManufacturerData(1, new byte[]{23, 33}) //设备厂商数据，自定义
+//                .addManufacturerData(1, new byte[]{23, 33}) //设备厂商数据，自定义
                 .build();
         //扫描响应数据(可选，当客户端扫描时才发送)
         AdvertiseData scanResponse = new AdvertiseData.Builder()
-                .addManufacturerData(2, new byte[]{66, 66}) //设备厂商数据，自定义
+//                .addManufacturerData(2, new byte[]{66, 66}) //设备厂商数据，自定义
                 .addServiceUuid(new ParcelUuid(UUID_SERVICE)) //服务UUID
+                .setIncludeTxPowerLevel(true)  //是否在广播中携带设备的名称
 //                .addServiceData(new ParcelUuid(UUID_SERVICE), new byte[]{2}) //服务数据，自定义
                 .build();
         mBluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
